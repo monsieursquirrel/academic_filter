@@ -1,0 +1,6 @@
+[package]
+name = "filter_lib"
+version = "0.1.0"
+authors = ["monsieursquirrel <conrad@bebbington.org>"]
+
+[dependencies]

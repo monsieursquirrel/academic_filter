@@ -1,0 +1,11 @@
+[package]
+name = "academic_filter"
+version = "0.1.0"
+authors = ["monsieursquirrel <conrad@bebbington.org>"]
+
+[dependencies]
+clap = "2.4.0"
+hound = "1.1.0"
+
+[dependencies.filter_lib]
+path = "lib/filter_lib"
