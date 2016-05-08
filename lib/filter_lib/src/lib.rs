@@ -17,8 +17,8 @@ impl FilterTwoPole {
             last_write_in: 0,
             prev_out: [0.0; 2],
             last_write_out: 0,
-            in_coeffs: [0.2; 3],
-            out_coeffs: [0.4; 2]
+            in_coeffs: [0.0012074046354035072, 0.0024148092708070144, 0.0012074046354035072],
+            out_coeffs: [1.8993325472756315, -0.9041621658172454]
         }
     }
 
