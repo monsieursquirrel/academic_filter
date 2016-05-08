@@ -40,7 +40,7 @@ fn main() {
         let filtered = filter.process_sample(sample);
 
         // apply clipping
-        let clipped = if filtered > 1.0 { 1.0 } else if filtered < -1.0 { -1.0 } else { filtered };
+        let clipped = filtered.min(1.0).max(-1.0);
 
         writer.write_sample((clipped * fp_outscale) as i32).unwrap();
     }
