@@ -1,8 +1,10 @@
 extern crate clap;
 extern crate hound;
+extern crate filter_lib;
 
 use clap::{App, Arg};
 use hound::{WavReader, WavWriter};
+use filter_lib::FilterTwoPole;
 
 fn main() {
     let args = App::new("Academic filter")
@@ -25,14 +27,22 @@ fn main() {
     let mut writer = WavWriter::create(outfile, input_spec).unwrap();
 
     // work out scaling to convert samples to f32 range -1.0 to 1.0
-    let fp_outscale = (1 << (input_spec.bits_per_sample - 1)) as f32;
+    let fp_outscale = ((1 << (input_spec.bits_per_sample - 1)) - 1) as f32;
     let fp_inscale = 1.0 / fp_outscale;
 
+    // create filter
+    let mut filter = FilterTwoPole::new(input_spec.sample_rate);
+
+    // process
     for maybe_sample in reader.samples::<i32>() {
         let sample = (maybe_sample.unwrap() as f32) * fp_inscale;
 
+        let filtered = filter.process_sample(sample);
 
-        writer.write_sample((sample * fp_outscale) as i32).unwrap();
+        // apply clipping
+        let clipped = if filtered > 1.0 { 1.0 } else if filtered < -1.0 { -1.0 } else { filtered };
+
+        writer.write_sample((clipped * fp_outscale) as i32).unwrap();
     }
 
     writer.finalize().unwrap();
