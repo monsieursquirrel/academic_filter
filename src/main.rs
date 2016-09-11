@@ -31,7 +31,7 @@ fn main() {
     let fp_inscale = 1.0 / fp_outscale;
 
     // create filter
-    let mut filter = FilterTwoPole::new(input_spec.sample_rate);
+    let mut filter = FilterTwoPole::lowpass(500.0, input_spec.sample_rate);
 
     // process
     for maybe_sample in reader.samples::<i32>() {

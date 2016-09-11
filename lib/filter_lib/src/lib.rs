@@ -1,3 +1,8 @@
+extern crate num;
+
+use num::Complex;
+use std::f32;
+
 pub struct FilterTwoPole {
     // use circular buffers for previous sample data
     prev_in: [f32; 2],
@@ -19,6 +24,31 @@ impl FilterTwoPole {
             last_write_out: 0,
             in_coeffs: [0.0012074046354035072, 0.0024148092708070144, 0.0012074046354035072],
             out_coeffs: [1.8993325472756315, -0.9041621658172454]
+        }
+    }
+
+    pub fn lowpass(cutoff_freq: f32, sample_rate: u32) -> FilterTwoPole {
+        // zeros are both at -1
+        let z = [Complex::<f32>::new(-1.0, 0.0); 2];
+
+        // poles are a pair with angle +/- pi*Fc/Fs
+        // the magnitude is set at 0.5 for now
+        let pole_angle = (f32::consts::PI * cutoff_freq) / (sample_rate as f32);
+        let pole_mag = 0.5;
+        let p = [Complex::<f32>::from_polar(&pole_mag, &pole_angle),
+                Complex::<f32>::from_polar(&pole_mag, &-pole_angle)];
+
+        println!("{:?}", p);
+        println!("{:?}", [1.0, -(z[0] + z[1]).norm(), (z[0] * z[1]).norm()]);
+        println!("{:?}", [(p[0] + p[1]).norm(), (p[0] * p[1]).norm()]);
+
+        FilterTwoPole {
+            prev_in: [0.0; 2],
+            last_write_in: 0,
+            prev_out: [0.0; 2],
+            last_write_out: 0,
+            in_coeffs: [1.0, -(z[0] + z[1]).norm(), (z[0] * z[1]).norm()],
+            out_coeffs: [-(p[0] + p[1]).norm(), (p[0] * p[1]).norm()]
         }
     }
 
