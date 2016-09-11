@@ -38,10 +38,6 @@ impl FilterTwoPole {
         let p = [Complex::<f32>::from_polar(&pole_mag, &pole_angle),
                 Complex::<f32>::from_polar(&pole_mag, &-pole_angle)];
 
-        println!("{:?}", p);
-        println!("{:?}", [1.0, -(z[0] + z[1]).norm(), (z[0] * z[1]).norm()]);
-        println!("{:?}", [(p[0] + p[1]).norm(), (p[0] * p[1]).norm()]);
-
         FilterTwoPole {
             prev_in: [0.0; 2],
             last_write_in: 0,
